@@ -1,0 +1,2 @@
+# MDD10A_library_for_raspberrypi
+raspberry pi で動作するモータドライバcytron MDD10A用のライブラリ
