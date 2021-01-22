@@ -30,7 +30,11 @@ io.setwarnings(False)
 #	PWM	 on		on		  off		  on
 
 # The pins configuration for Model B Revision 1.0
+<<<<<<< HEAD
 leftMotor_DIR_pin = 27
+=======
+leftMotor_DIR_pin = 22
+>>>>>>> 55ed5dd783b056d65add4fe12bdb00ce6b4054b1
 io.setup(leftMotor_DIR_pin, io.OUT)
 
 rightMotor_DIR_pin = 23
@@ -49,9 +53,15 @@ rightMotor_PWM_pin = 22
 io.setup(leftMotor_PWM_pin, io.OUT)
 io.setup(rightMotor_PWM_pin, io.OUT)
 
+<<<<<<< HEAD
 # MAX Frequency 20 Hz 20k?
 leftMotorPWM = io.PWM(leftMotor_PWM_pin, 10000)
 rightMotorPWM = io.PWM(rightMotor_PWM_pin, 10000)
+=======
+# MAX Frequency 20 Hz
+leftMotorPWM = io.PWM(leftMotor_PWM_pin, 20)
+rightMotorPWM = io.PWM(rightMotor_PWM_pin, 20)
+>>>>>>> 55ed5dd783b056d65add4fe12bdb00ce6b4054b1
 
 leftMotorPWM.start(0)
 leftMotorPWM.ChangeDutyCycle(0)
@@ -96,7 +106,11 @@ def setMotorLeft(power):
         # Stopp mode for the left motor
         io.output(leftMotor_DIR_pin, False)
         pwm = 0
+<<<<<<< HEAD
 # print "SetMotorLeft", pwm
+=======
+#	print "SetMotorLeft", pwm
+>>>>>>> 55ed5dd783b056d65add4fe12bdb00ce6b4054b1
     leftMotorPower = pwm
     leftMotorPWM.ChangeDutyCycle(pwm)
 
