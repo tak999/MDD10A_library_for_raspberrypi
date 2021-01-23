@@ -1,4 +1,3 @@
-from os import error
 import time
 import pigpio  # pigpioライブラリをインポートする
 
@@ -21,55 +20,45 @@ class Moter:
             print('Your set_PWM_frequency is configured the numerically closest frequency:',
                   set_PWM_frequency_return)
 
-            pi.set_PWM_dutycycle(self.pwm_pin, self.pwm_range)
+            pi.set_PWM_range(self.pwm_pin, self.pwm_range)
         else:
             pass
 
-    def set_PWM(self, pwm_duty, pwm_dir=True):
+    def set_PWM(self, pwm_duty):
         """
-        docstring
+        pwm_duty <= 1000(default)
         """
         self.pwm_duty = pwm_duty
-        self.pwm_dir = pwm_dir
-        if(self.pwm_duty <= self.pwm_range):
-            pi.set_PWM_dutycycle(dir_1, 2000)
+        if(abs(self.pwm_duty) <= self.pwm_range):
+            if(self.pwm_duty > 0):
+                pi.set_PWM_dutycycle(self.pwm_pin, self.pwm_duty)
+                pi.write(self.dir_pin, True)
+            else:
+                pi.set_PWM_dutycycle(self.pwm_pin, -1 * self.pwm_duty)
+                pi.write(self.dir_pin, False)
         else:
             pass
 
 
-pwm_1 = 18
-dir_1 = 27
-'''pwm_2 = 23
-dir_2 = 22
-pwm_3 = 12
-dir_3 = 13
-pwm_4 = 16
-dir_4 = 19'''
+moter1 = Moter(dir_pin=19, pwm_pin=16)
+moter2 = Moter(dir_pin=13, pwm_pin=12)
+moter3 = Moter(dir_pin=23, pwm_pin=22)
+moter4 = Moter(dir_pin=27, pwm_pin=18)
 
-# GPIOのモードを設定します他にINPUTとかある。ex:18はGPIO18の18番です。
-pi.set_mode(pwm_1, pigpio.OUTPUT)
-pi.set_mode(dir_1, pigpio.OUTPUT)
-'''pi.set_mode(pwm_2, pigpio.OUTPUT)
-pi.set_mode(dir_2, pigpio.OUTPUT)
-pi.set_mode(pwm_3, pigpio.OUTPUT)
-pi.set_mode(dir_3, pigpio.OUTPUT)
-pi.set_mode(pwm_4, pigpio.OUTPUT)
-pi.set_mode(dir_4, pigpio.OUTPUT)'''
+try:
+    while True:
+        # ここに、Ctrl-C で止めたい処理を書く
+        moter1.set_PWM(pwm_duty=-200)
+        moter2.set_PWM(pwm_duty=-200)
+        moter3.set_PWM(pwm_duty=-200)
+        moter4.set_PWM(pwm_duty=-200)
 
-# GPIO18: 2Hz、duty比0.5
-pi.write(pwm_1, 0)
-set_PWM_frequency_return = pi.set_PWM_frequency(dir_1, 20000)
-if(set_PWM_frequency_return == 'OK'):
-    print('Your set_PWM_frequency is configured accurately')
-else:
-    print('Your set_PWM_frequency is configured the numerically closest frequency, sorry man!',
-          set_PWM_frequency_return)
-pi.set_PWM_range(dir_1, 2000)
-pi.set_PWM_dutycycle(dir_1, 2000)
-# pi.hardware_PWM(pwm_1, 20000, 100000)
-# GPIO19: 8Hz、duty比0.1(ppm(百万分率)で数値を記入する)
-'''pi.hardware_PWM(pwm_2, 20000, 500000)
-'''
-time.sleep(10)
-
-pi.stop()
+except KeyboardInterrupt:
+    # Ctrl-C を捕まえた！
+    moter1.set_PWM(pwm_duty=0)
+    moter2.set_PWM(pwm_duty=0)
+    moter3.set_PWM(pwm_duty=0)
+    moter4.set_PWM(pwm_duty=0)
+    print('interrupted! stop pigpio')
+    pi.stop()
+    pass
